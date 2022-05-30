@@ -6,9 +6,15 @@ from django.db import migrations
 def copy_owners(apps, schema_editor):
     Flat = apps.get_model('property', 'Flat')
     Owner = apps.get_model('property', 'Owner')
-    for flat in Flat.objects.all():
-        Owner.objects.get_or_create(owner=flat.owner, owner_pure_phone=flat.owner_pure_phone,
-                                    owners_phonenumber=flat.owners_phonenumber)
+    flat_set = Flat.objects.all()
+    flat_iterator = flat_set.iterator()
+    while True:
+        try:
+            flat = next(flat_iterator)
+            Owner.objects.get_or_create(owner=flat.owner, owner_pure_phone=flat.owner_pure_phone,
+                                        owners_phonenumber=flat.owners_phonenumber)
+        except StopIteration:
+            break
 
 
 class Migration(migrations.Migration):

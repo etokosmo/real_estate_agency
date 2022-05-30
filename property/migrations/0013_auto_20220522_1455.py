@@ -6,8 +6,14 @@ from django.db import migrations
 def set_flats(apps, schema_editor):
     Flat = apps.get_model('property', 'Flat')
     Owner = apps.get_model('property', 'Owner')
-    for owner in Owner.objects.all():
-        owner.flats.set(Flat.objects.filter(owner=owner.owner))
+    owner_set = Owner.objects.all()
+    owner_iterator = owner_set.iterator()
+    while True:
+        try:
+            owner = next(owner_iterator)
+            owner.flats.set(Flat.objects.filter(owner=owner.owner))
+        except StopIteration:
+            break
 
 
 class Migration(migrations.Migration):

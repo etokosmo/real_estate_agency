@@ -10,7 +10,7 @@ class Flat(models.Model):
         default=timezone.now,
         db_index=True)
 
-    new_building = models.BooleanField('Является ли новостройкой', blank=True, null=True)
+    new_building = models.BooleanField('Является ли новостройкой', blank=True, null=True, db_index=True)
     liked_by = models.ManyToManyField(User, related_name="liked_flats", blank=True)
 
     description = models.TextField('Текст объявления', blank=True)
@@ -24,14 +24,17 @@ class Flat(models.Model):
         'Район города, где находится квартира',
         max_length=50,
         blank=True,
-        help_text='Чертаново Южное')
+        help_text='Чертаново Южное',
+        db_index=True)
     address = models.TextField(
         'Адрес квартиры',
-        help_text='ул. Подольских курсантов д.5 кв.4')
+        help_text='ул. Подольских курсантов д.5 кв.4',
+        db_index=True)
     floor = models.CharField(
         'Этаж',
         max_length=3,
-        help_text='Первый этаж, последний этаж, пятый этаж')
+        help_text='Первый этаж, последний этаж, пятый этаж',
+        db_index=True)
 
     rooms_number = models.IntegerField(
         'Количество комнат в квартире',
@@ -55,8 +58,14 @@ class Flat(models.Model):
 
 
 class Complaint(models.Model):
-    user = models.ForeignKey(User, verbose_name='Пользователь, который пожаловался', on_delete=models.CASCADE)
-    flat = models.ForeignKey(Flat, verbose_name='Квартира, на которую пожаловались', on_delete=models.CASCADE)
+    user = models.ForeignKey(User,
+                             verbose_name='Пользователь, который пожаловался',
+                             related_name="user_complaints",
+                             on_delete=models.CASCADE)
+    flat = models.ForeignKey(Flat,
+                             verbose_name='Квартира, на которую пожаловались',
+                             related_name="flat_complaints",
+                             on_delete=models.CASCADE)
     text = models.TextField('Текст жалобы')
 
     def __str__(self):

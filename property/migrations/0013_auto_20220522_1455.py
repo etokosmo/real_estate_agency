@@ -8,12 +8,8 @@ def set_flats(apps, schema_editor):
     Owner = apps.get_model('property', 'Owner')
     owner_set = Owner.objects.all()
     owner_iterator = owner_set.iterator()
-    while True:
-        try:
-            owner = next(owner_iterator)
-            owner.flats.set(Flat.objects.filter(owner=owner.owner))
-        except StopIteration:
-            break
+    for owner in owner_iterator:
+        owner.flats.set(Flat.objects.filter(owner=owner.owner))
 
 
 class Migration(migrations.Migration):

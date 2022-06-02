@@ -7,26 +7,18 @@ def calculate_is_new_building(apps, schema_editor):
     Flat = apps.get_model('property', 'Flat')
     flat_set = Flat.objects.all()
     flat_iterator = flat_set.iterator()
-    while True:
-        try:
-            flat = next(flat_iterator)
-            flat.new_building = flat.construction_year >= 2015
-            flat.save()
-        except StopIteration:
-            break
+    for flat in flat_iterator:
+        flat.new_building = flat.construction_year >= 2015
+        flat.save()
 
 
 def back_to_none_new_building(apps, schema_editor):
     Flat = apps.get_model('property', 'Flat')
     flat_set = Flat.objects.all()
     flat_iterator = flat_set.iterator()
-    while True:
-        try:
-            flat = next(flat_iterator)
-            flat.new_building = None
-            flat.save()
-        except StopIteration:
-            break
+    for flat in flat_iterator:
+        flat.new_building = None
+        flat.save()
 
 
 class Migration(migrations.Migration):

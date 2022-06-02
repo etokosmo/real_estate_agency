@@ -8,29 +8,21 @@ def normalize_phone_number(apps, schema_editor):
     Flat = apps.get_model('property', 'Flat')
     flat_set = Flat.objects.all()
     flat_iterator = flat_set.iterator()
-    while True:
-        try:
-            flat = next(flat_iterator)
-            phoneNumber = phonenumbers.parse(flat.owners_phonenumber, "RU")
-            if phonenumbers.is_valid_number(phoneNumber):
-                flat.owner_pure_phone = phonenumbers.format_number(phoneNumber,
-                                                                   phonenumbers.PhoneNumberFormat.INTERNATIONAL)
-                flat.save()
-        except StopIteration:
-            break
+    for flat in flat_iterator:
+        phoneNumber = phonenumbers.parse(flat.owners_phonenumber, "RU")
+        if phonenumbers.is_valid_number(phoneNumber):
+            flat.owner_pure_phone = phonenumbers.format_number(phoneNumber,
+                                                               phonenumbers.PhoneNumberFormat.INTERNATIONAL)
+            flat.save()
 
 
 def back_to_none_phone_number(apps, schema_editor):
     Flat = apps.get_model('property', 'Flat')
     flat_set = Flat.objects.all()
     flat_iterator = flat_set.iterator()
-    while True:
-        try:
-            flat = next(flat_iterator)
-            flat.owner_pure_phone = None
-            flat.save()
-        except StopIteration:
-            break
+    for flat in flat_iterator:
+        flat.owner_pure_phone = None
+        flat.save()
 
 
 class Migration(migrations.Migration):

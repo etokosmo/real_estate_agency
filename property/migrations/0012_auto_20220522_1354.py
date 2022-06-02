@@ -8,13 +8,10 @@ def copy_owners(apps, schema_editor):
     Owner = apps.get_model('property', 'Owner')
     flat_set = Flat.objects.all()
     flat_iterator = flat_set.iterator()
-    while True:
-        try:
-            flat = next(flat_iterator)
-            Owner.objects.get_or_create(owner=flat.owner, owner_pure_phone=flat.owner_pure_phone,
-                                        owners_phonenumber=flat.owners_phonenumber)
-        except StopIteration:
-            break
+    for flat in flat_iterator:
+        Owner.objects.get_or_create(owner=flat.owner,
+                                    owner_pure_phone=flat.owner_pure_phone,
+                                    owners_phonenumber=flat.owners_phonenumber)
 
 
 class Migration(migrations.Migration):
